@@ -18,7 +18,7 @@ services:
     volumes:
       - ./data:/opt/app/data
     ports:
-      - "10000:5000"
+      - "127.0.0.1:10000:5000"
 x-docker-remote:
   project:
     name: youtube_timer

@@ -35,6 +35,11 @@
         background-color: #ff6e8d;
         border-radius: 2px;
       }
+      #github_icon {
+        position: fixed;
+        right: 1em;
+        bottom: 1em;
+      }
     </style>
   </head>
   <body>
@@ -76,5 +81,8 @@
       </div>
     </div>
 
+    <a id="github_icon" href="https://github.com/NiklasRosenstein/youtube-timer">
+      <img src="{{ url_for('static', filename='github.svg') }}">
+    </a>
   </body>
 </html>
