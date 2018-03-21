@@ -22,7 +22,9 @@ def get_argument_parser():
 def main():
   parser = get_argument_parser()
   args = parser.parse_args()
-  response = yt.search(q=args.query, maxResults=50)
+
+  search_params = {'q': args.query, 'maxResults': 50}
+  response = yt.search(**search_params)
   items = queue.Queue(maxsize=20)
   stop = threading.Event()
 
@@ -43,7 +45,8 @@ def main():
         print('Note: No more items. End of search results?')
         print(response)
         break
-      response = yt.search(pageToken=response['nextPageToken'], maxResults=50)
+      search_params['pageToken'] = response['nextPageToken']
+      response = yt.search(**search_params)
     # Only add the sentinel if the hub hasn't been stopped, otherwise we
     # may not have a worker that can consume the element.
     if not hub.stopped(): items.put(None)
@@ -65,9 +68,13 @@ def main():
         print('{} (SKIP)'.format(video_id))
         continue
 
-      duration = yt.video(video_id)['contentDetails']['duration']
+      try:
+        duration = yt.video(video_id)['contentDetails']['duration']
+      except yt.InvalidVideoID:
+        print('{} (INVALID ID)'.format(video_id))
+        continue
       duration = yt.parse_duration(duration)
-      print(video_id, duration)
+      print('{} ({}s): {}'.format(video_id, duration, item['snippet']['title']))
       Video(id=video_id, duration=duration)
       commit()
 

@@ -6,6 +6,9 @@ from urllib.parse import urljoin
 
 class YouTubeAPI:
 
+  class InvalidVideoID(ValueError):
+    pass
+
   def __init__(self, api_key, ssl=True):
     self.api_key = api_key
     self.ssl = ssl
@@ -33,7 +36,7 @@ class YouTubeAPI:
     params = {'part': ','.join(parts), 'id': video_id}
     data = self.request('videos', params=params).json()
     if len(data['items']) != 1:
-      raise ValueError('invalid YouTube Video ID: {!r}'.format(video_id))
+      raise self.InvalidVideoID(video_id)
     return data['items'][0]
 
   def search(self, **params):
