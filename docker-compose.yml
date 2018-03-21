@@ -1,0 +1,24 @@
+version: '3.4'
+services:
+  collectvids:
+    build:
+      context: .
+      dockerfile: Dockerfile.collectvids
+    environment:
+      CONFIG_FILE: /opt/app/config.json
+    volumes:
+      - ./data:/opt/app/data
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    environment:
+      CONFIG_FILE: /opt/app/config.json
+      FLASK_DEBUG: "true"
+    volumes:
+      - ./data:/opt/app/data
+    ports:
+      - "10000:5000"
+x-docker-remote:
+  project:
+    name: youtube_timer

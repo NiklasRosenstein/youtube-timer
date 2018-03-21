@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf8">
+    <title>YouTube Timer</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <style>
+      div[class|=ui-row] {
+        text-align: center;
+      }
+      div[class|=ui-cell] {
+        vertical-align: middle;
+        display: inline-block;
+      }
+      html {
+        font-family: 'Open Sans';
+      }
+      form input {
+        padding: .5em;
+        margin-left: 1em;
+        border: none;
+        border-radius: 2px;
+        background-color: #e9e9e9;
+        text-align: center;
+      }
+      form input[type="submit"] {
+        background-color: #0066ea;
+        color: white;
+        border: none;
+      }
+      p.error {
+        padding: .5em 1em;
+        font-size: 90%;
+        display: inline-block;
+        background-color: #ff6e8d;
+        border-radius: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ui-row">
+      <div class="ui-cell">
+        <h1>YouTube Timer</h1>
+      </div>
+    </div>
+
+    <div class="ui-row">
+      <div class="ui-cell">
+        <form>
+          <input name="duration" value="{{request.args['duration']}}" placeholder="H:M:S" autofocus>
+          <input type="submit" value="Go">
+        </form>
+      </div>
+    </div>
+
+    {% if notfound %}
+    <div class="ui-row">
+      <p class="error">Sorry, our database does not contain a video of that length.</p>
+    </div>
+    {% endif %}
+
+    <div class="ui-row">
+      <div class="ui-cell">
+        <p>Inspired by</p>
+      </div>
+    </div>
+
+    <div class="ui-row">
+      <div class="ui-cell">
+        <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">
+          HD microwave oven that finds and screens a funny YouTube video the same duration as your selected cooking time.</p>&mdash;
+          Bored Elon Musk (@BoredElonMusk)
+          <a href="https://twitter.com/BoredElonMusk/status/539467221740040192?ref_src=twsrc%5Etfw">December 1, 2014</a>
+        </blockquote>
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+      </div>
+    </div>
+
+  </body>
+</html>

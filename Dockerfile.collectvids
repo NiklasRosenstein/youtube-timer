@@ -1,0 +1,6 @@
+FROM python:latest
+RUN pip install pony requests
+
+WORKDIR /opt/app
+COPY . .
+ENTRYPOINT ["python", "-m", "youtube_timer.collectvids"]

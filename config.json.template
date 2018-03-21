@@ -1,0 +1,10 @@
+{
+  "database": {
+    "provider": "sqlite",
+    "filename": "/opt/app/data/database.sqlite",
+    "create_db": true
+  },
+  "youtube": {
+    "developer_key": "Google YouTube API Key"
+  }
+}

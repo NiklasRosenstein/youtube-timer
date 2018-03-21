@@ -1,0 +1,8 @@
+FROM python:latest
+RUN pip install pony flask
+
+WORKDIR /opt/app
+COPY . .
+ENV FLASK_APP=youtube_timer/web_run.py
+ENV PYTHONPATH=.
+CMD ["flask", "run", "-h", "0.0.0.0"]
