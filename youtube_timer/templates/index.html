@@ -54,6 +54,13 @@
             events: {
               onReady: function() {
                 player.playVideo()
+              },
+              onStateChange: function () {
+                var state = player.getPlayerState()
+                if (state == YT.PlayerState.ENDED) {
+                  var audio = new Audio('/static/bell.m4a')
+                  audio.play()
+                }
               }
             }
           })
@@ -107,7 +114,7 @@
 
     <div class="ui-row">
       <div class="ui-cell">
-        <div style="position: relative; width: 1000px; height: 581px; text-align: left; background-image: url('{{ url_for('static', filename='microwave.png') }}')">
+        <div style="position: relative; width: 1000px; height: 581px; text-align: left; background-image: url('/static/microwave.png')">
           <form style="position: absolute; left: 805px; top: 126px; display: inline-block;" onsubmit="return submitForm(event)">
             <input id="duration" name="duration" value="{{duration or ''}}" placeholder="{{randint(1, 5)}}m {{randint(0,59)}}3s" autofocus>
           </form>
@@ -131,7 +138,7 @@
     </div>
 
     <a id="github_icon" href="https://github.com/NiklasRosenstein/youtube-timer">
-      <img src="{{ url_for('static', filename='github.svg') }}">
+      <img src="/static/github.svg">
     </a>
   </body>
 </html>
