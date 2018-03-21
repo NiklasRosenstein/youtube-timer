@@ -47,7 +47,7 @@ def render_videos_svg_graph():
     return ''
 
   out = io.StringIO()
-  out.write('<svg height="50px" width="100%">')
+  out.write('<svg height="50px" width="100%" style="background-color: #f2f2f2">')
   out.write('''
       <style type="text/css">
       <![CDATA[
