@@ -21,4 +21,4 @@ services:
       - "127.0.0.1:10000:5000"
 x-docker-remote:
   project:
-    name: youtube_timer
+    name: ytmicrowave
