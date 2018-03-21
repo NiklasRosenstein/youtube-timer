@@ -73,9 +73,11 @@
             if (data.result) playVideo(data.result)
             else if (data.error) alert(data.error)
             else showNotFoundAlert()
+            // Update the location in the browser bar without triggering a refresh.
+            window.history.replaceState({} , '', '/' + duration.replace(' ', ''));
           }
         };
-        xhttp.open("GET", "/api?duration=" + duration, true)
+        xhttp.open("GET", "/api?duration=" + encodeURI(duration), true)  // TODO: encodeURI() doesn't encode & and /
         xhttp.send()
         return false
       }
@@ -99,7 +101,7 @@
 
     <div class="ui-row">
       <div class="ui-cell">
-        <h1>No probs, Elon.</h1>
+        <h1>Here's a prototype.</h1>
       </div>
     </div>
 
@@ -107,7 +109,7 @@
       <div class="ui-cell">
         <div style="position: relative; width: 1000px; height: 581px; text-align: left; background-image: url('{{ url_for('static', filename='microwave.png') }}')">
           <form style="position: absolute; left: 805px; top: 126px; display: inline-block;" onsubmit="return submitForm(event)">
-            <input id="duration" name="duration" value="{{request.args['duration']}}" placeholder="M:S" autofocus>
+            <input id="duration" name="duration" value="{{duration or ''}}" placeholder="{{randint(1, 5)}}m {{randint(0,59)}}3s" autofocus>
           </form>
           <div style="display: inline-block; position: absolute; width: 640px; height: 360px; left: 61px; top: 107px; background-color: black;">
             <div id="player"></div>

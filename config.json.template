@@ -9,7 +9,7 @@
   },
   "web": {
     "graph": {
-      "max_duration": "20:00"
+      "max_duration": "20m"
     }
   }
 }

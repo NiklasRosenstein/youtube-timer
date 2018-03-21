@@ -2,6 +2,9 @@
 import functools
 import io
 import json
+import random
+import re
+
 from flask import Flask, Markup, make_response, redirect, request, render_template
 from .database import db_session, select, Video
 from . import config
@@ -20,13 +23,16 @@ def jsonify(func):
 
 def parse_duration(s):
   """
-  Parses a duration string in the form of M:S and returns it as seconds.
+  Parses a duration string in the form of `X m Y s` (ignoring spaces).
   """
 
-  duration = [int(x) for x in s.split(':')]
-  if len(duration) > 2:
-    raise ValueError('invalid duration string')
-  return sum(x*y for x, y in zip(duration[::-1], [1, 60]))
+  s = s.replace(' ', '')
+  matches = re.findall('(\d+[ms])', s)
+  if sum(len(x) for x in matches) != len(s):
+    raise ValueError('invalid duration string', matches, s)
+
+  mod = {'m': 60, 's': 1}
+  return sum(int(x[:-1]) * mod[x[-1]] for x in matches)
 
 
 @db_session
@@ -35,8 +41,10 @@ def render_videos_svg_graph():
   if max_duration is None:
     return ''  # No videos
 
-  config_max = parse_duration(config.get('web.graph.max_duration', '20:00'))
+  config_max = parse_duration(config.get('web.graph.max_duration', '20m'))
   max_duration = min(max_duration, config_max)
+  if max_duration == 0:
+    return ''
 
   out = io.StringIO()
   out.write('<svg height="50px" width="100%">')
@@ -61,24 +69,24 @@ def render_videos_svg_graph():
 
 
 @app.route('/')
+@app.route('/<duration>')
 @db_session
-def index():
-  videoid = None
-
-  if 'duration' in request.args:
+def index(duration=None):
+  video = None
+  if duration:
     try:
-      seconds = parse_duration(request.args['duration'])
+      seconds = parse_duration(duration)
     except ValueError:
       pass
     else:
       video = Video.select_by_duration(seconds)
-      if video:
-        videoid = video.id
 
-  graph = render_videos_svg_graph()
-  notfound = ('duration' in request.args and videoid is None)
-  return render_template('index.html', notfound=notfound, videoid=videoid,
-    graph=Markup(graph))
+  return render_template('index.html',
+    notfound=(duration and not video),
+    videoid=(video.id if video else None),
+    graph=Markup(render_videos_svg_graph()),
+    randint=random.randint,
+    duration=duration)
 
 
 @app.route('/api')
