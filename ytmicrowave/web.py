@@ -93,7 +93,7 @@ def index(duration=None):
 @jsonify
 @db_session
 def api():
-  if 'duration' not in request.args:
+  if not request.args.get('duration'):
     return {'error': 'bad request'}, 400
   try:
     duration = parse_duration(request.args['duration'])
