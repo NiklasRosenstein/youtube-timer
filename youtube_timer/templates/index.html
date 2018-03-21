@@ -4,6 +4,7 @@
     <meta charset="utf8">
     <title>YouTube Timer</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <script src="http://www.youtube.com/player_api"></script>
     <style>
       div[class|=ui-row] {
         text-align: center;
@@ -28,47 +29,62 @@
         color: white;
         border: none;
       }
-      p.error {
-        padding: .5em 1em;
-        font-size: 90%;
-        display: inline-block;
-        background-color: #ff6e8d;
-        border-radius: 2px;
-      }
       #github_icon {
         position: fixed;
         right: 1em;
         bottom: 1em;
       }
     </style>
+    <script>
+      var playid = "{{ videoid or '' }}"
+      var player = null
+
+      function showNotFoundAlert() {
+        alert('Sorry, no video with this duration in the database.')
+      }
+
+      function onYouTubePlayerAPIReady() {
+        if (playid) playVideo(playid)
+      }
+
+      function playVideo(id) {
+        if (!player) {
+          player = new YT.Player('player', {
+            videoId: id,
+            events: {
+              onReady: function() {
+                player.playVideo()
+              }
+            }
+          })
+        }
+        else {
+          player.loadVideoById(id)
+        }
+      }
+
+      function submitForm(ev) {
+        ev.preventDefault()
+        var duration = document.getElementById('duration').value
+        var xhttp = new XMLHttpRequest()
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4) {
+            var data = JSON.parse(xhttp.responseText)
+            if (data.result) playVideo(data.result)
+            else if (data.error) alert(data.error)
+            else showNotFoundAlert()
+          }
+        };
+        xhttp.open("GET", "/api?duration=" + duration, true)
+        xhttp.send()
+        return false
+      }
+    </script>
   </head>
   <body>
-    <div class="ui-row">
-      <div class="ui-cell">
-        <h1>YouTube Timer</h1>
-      </div>
-    </div>
-
-    <div class="ui-row">
-      <div class="ui-cell">
-        <form>
-          <input name="duration" value="{{request.args['duration']}}" placeholder="H:M:S" autofocus>
-          <input type="submit" value="Go">
-        </form>
-      </div>
-    </div>
-
     {% if notfound %}
-    <div class="ui-row">
-      <p class="error">Sorry, our database does not contain a video of that length.</p>
-    </div>
+    <script>showNotFoundAlert()</script>
     {% endif %}
-
-    <div class="ui-row">
-      <div class="ui-cell">
-        <p>Inspired by</p>
-      </div>
-    </div>
 
     <div class="ui-row">
       <div class="ui-cell">
@@ -78,6 +94,37 @@
           <a href="https://twitter.com/BoredElonMusk/status/539467221740040192?ref_src=twsrc%5Etfw">December 1, 2014</a>
         </blockquote>
         <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+      </div>
+    </div>
+
+    <div class="ui-row">
+      <div class="ui-cell">
+        <h1>No probs, Elon.</h1>
+      </div>
+    </div>
+
+    <div class="ui-row">
+      <div class="ui-cell">
+        <div style="position: relative; width: 1000px; height: 581px; text-align: left; background-image: url('{{ url_for('static', filename='microwave.png') }}')">
+          <form style="position: absolute; left: 805px; top: 126px; display: inline-block;" onsubmit="return submitForm(event)">
+            <input id="duration" name="duration" value="{{request.args['duration']}}" placeholder="M:S" autofocus>
+          </form>
+          <div style="display: inline-block; position: absolute; width: 640px; height: 360px; left: 61px; top: 107px; background-color: black;">
+            <div id="player"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui-row">
+      <div class="ui-cell">
+        <h2>Video availablity up to 20 minutes:</h2>
+      </div>
+    </div>
+
+    <div class="ui-row">
+      <div class="ui-cell" style="background-color: #f2f2f2; max-width: 1024px;">
+        {{graph}}
       </div>
     </div>
 

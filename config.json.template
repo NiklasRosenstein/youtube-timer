@@ -6,5 +6,10 @@
   },
   "youtube": {
     "developer_key": "Google YouTube API Key"
+  },
+  "web": {
+    "graph": {
+      "max_duration": "20:00"
+    }
   }
 }
