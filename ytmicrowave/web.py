@@ -81,12 +81,19 @@ def index(duration=None):
     else:
       video = Video.select_by_duration(seconds)
 
+  random_video = next(iter(Video.select_random(limit=1)), None)
+  if random_video:
+    random_duration = '{}m {}s'.format(*divmod(random_video.duration, 60))
+  else:
+    random_duration = '1m 3s'
+
   return render_template('index.html',
     notfound=(duration and not video),
     videoid=(video.id if video else None),
     graph=Markup(render_videos_svg_graph()),
     randint=random.randint,
-    duration=duration)
+    duration=duration,
+    random_duration=random_duration)
 
 
 @app.route('/api')

@@ -116,7 +116,7 @@
       <div class="ui-cell">
         <div style="position: relative; width: 1000px; height: 581px; text-align: left; background-image: url('/static/microwave.png')">
           <form style="position: absolute; left: 805px; top: 126px; display: inline-block;" onsubmit="return submitForm(event)">
-            <input id="duration" name="duration" value="{{duration or ''}}" placeholder="{{randint(1, 5)}}m {{randint(0,59)}}s" autofocus>
+            <input id="duration" name="duration" value="{{duration or random_duration}}" placeholder="{{random_duration}}" autofocus>
           </form>
           <div style="display: inline-block; position: absolute; width: 640px; height: 360px; left: 61px; top: 107px; background-color: black;">
             <div id="player"></div>
