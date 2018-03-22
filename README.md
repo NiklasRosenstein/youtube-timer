@@ -1,6 +1,6 @@
 ## YouTube Microwave
 
-Give our SAMSUNG YouTube Microwave a try: http://ytmicrowave.niklasrosenstein.com/
+Give our SAMSUNG YouTube Microwave a try: https://ytmicrowave.niklasrosenstein.com/
 
 Elon said it's a [good idea](https://twitter.com/BoredElonMusk/status/539467221740040192).
 
