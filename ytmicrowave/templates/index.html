@@ -76,21 +76,24 @@
       }
     </style>
     <script>
-        var duration_ranges = {{ duration_ranges }}
-        var max_duration = {{ max_duration }}
+      let playVideoId = {{ videoid }}
+      let graphData = {{ graph_data }}
     </script>
     <script>
-      var playid = "{{ videoid or '' }}"
-      var player = null
+      /* Called as soon as the YouTube API is loaded. */
+      function onYouTubePlayerAPIReady() {
+        if (playVideoId) playVideo(playVideoId)
+      }
 
+      /* The YouTube player in the microwave. */
+      let player = null
+
+      /* Displays an alert that no video with the selected duration could be found. */
       function showNotFoundAlert() {
         alert('Sorry, no video with this duration in the database.')
       }
 
-      function onYouTubePlayerAPIReady() {
-        if (playid) playVideo(playid)
-      }
-
+      /* Plays a video, creates and shows the player if necessary. */
       function playVideo(id) {
         document.getElementById('playerWrapper').style.display = 'inline-block'
         document.getElementById('tweet').style.display = 'none'
@@ -136,17 +139,20 @@
       }
 
       function drawVideoGraph(canvas) {
-        console.log('drawVideoGraph!!', duration_ranges, max_duration)
-        if (!max_duration) return;
         var ctx = canvas.getContext('2d')
+        let px1 = 1 / canvas.width
+        let barWidth = graphData.barWidth
+        if (barWidth < px1) barWidth = px1
+
         ctx.fillStyle = '#3af'
-        duration_ranges.forEach(function (range) {
-          var x = range[0] / max_duration * canvas.width;
-          var w = (range[1] - range[0]) / max_duration * canvas.width;
-          console.log(x, w)
-          ctx.fillRect(x, 0, w, canvas.height)
+
+        graphData.bars.forEach(function (item) {
+          let x = item[0]
+          let i = item[1]
+          let w = barWidth
+
+          ctx.fillRect(x*canvas.width, 0, w*canvas.width, canvas.height * i)
         })
-        console.log('drawVideoGraph!! DONE')
       }
     </script>
   </head>

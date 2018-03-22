@@ -4,7 +4,7 @@ import json
 import random
 import re
 
-from flask import Flask, make_response, redirect, request, render_template
+from flask import Flask, Markup, make_response, redirect, request, render_template
 from .database import db_session, select, Video
 from . import config
 
@@ -57,15 +57,20 @@ def index(duration=None):
   if max_duration is not None:
     config_max = parse_duration(config.get('web.graph.max_duration', '20m'))
     max_duration = min(max_duration, config_max)
+  max_count = Video.max_count()
 
   return render_template('index.html',
     notfound=(duration and not video),
-    videoid=(video.id if video else None),
+    videoid=Markup(json.dumps((video.id if video else None))),
     randint=random.randint,
     duration=duration,
     random_duration=random_duration,
-    duration_ranges=json.dumps(list(Video.iter_duration_ranges())),
-    max_duration=json.dumps(max_duration))
+    graph_data=Markup(json.dumps({
+      'barWidth': 1 / max_duration,
+      'bars': [(x[0] / max_duration, x[1] / max_count)
+               for x in Video.iter_durations()]
+    }))
+  )
 
 
 @app.route('/api')
