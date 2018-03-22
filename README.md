@@ -1,16 +1,14 @@
-## YouTube Microwave
 
-Give our SAMSUNG YouTube Microwave a try: https://ytmicrowave.niklasrosenstein.com/
+<img align="center" src="https://i.imgur.com/nBXaFsC.png">
 
-Elon said it's a [good idea](https://twitter.com/BoredElonMusk/status/539467221740040192).
+Try out the YouTube Microwave here: https://ytmicrowave.niklasrosenstein.com/
+
+[Inspired by Elon Musk](https://twitter.com/BoredElonMusk/status/539467221740040192).
 
 __Features__
 
-* Shows a YouTube video instead of a boring timer
+* Shows a graph of videos available for a duration (from 0s to 20m)
 * Plays a microwave bell sound after the video
-* Displays a graph of videos that have already been scraped from the YouTube
-  API into the database -- for some durations a video may not (yet) be
-  available
 
 ### Initialization/Deployment
 
