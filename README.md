@@ -1,7 +1,7 @@
 
 Try out the YouTube Microwave here: https://ytmicrowave.niklasrosenstein.com/
 
-[Inspired by Elon Musk](https://twitter.com/BoredElonMusk/status/539467221740040192).
+[Inspired by "BoredElonMusk"](https://twitter.com/BoredElonMusk/status/539467221740040192).
 
 <img align="center" src="https://i.imgur.com/nBXaFsC.png">
 

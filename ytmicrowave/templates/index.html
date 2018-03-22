@@ -51,7 +51,7 @@
         height: 360px;
       }
       #playerWrapper {
-        display: none;
+        display: inline-block;
         position: absolute;
         left: 61px;
         top: 97px;
@@ -67,12 +67,6 @@
         height: 20px;
         border: 1px solid #3af;
         border-top: none;
-      }
-      #tweet {
-        display: inline-block;
-        position: relative;
-        left: 122px;
-        top: 195px;
       }
     </style>
     <script>
@@ -95,8 +89,6 @@
 
       /* Plays a video, creates and shows the player if necessary. */
       function playVideo(id) {
-        document.getElementById('playerWrapper').style.display = 'inline-block'
-        document.getElementById('tweet').style.display = 'none'
         if (!player) {
           player = new YT.Player('player', {
             videoId: id,
@@ -166,14 +158,6 @@
           <form onsubmit="return submitForm(event)">
             <input id="duration" name="duration" value="{{duration or random_duration}}" placeholder="{{random_duration}}" autofocus>
           </form>
-          <div id="tweet">
-            <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">
-              HD microwave oven that finds and screens a funny YouTube video the same duration as your selected cooking time.</p>&mdash;
-              Bored Elon Musk (@BoredElonMusk)
-              <a href="https://twitter.com/BoredElonMusk/status/539467221740040192?ref_src=twsrc%5Etfw">December 1, 2014</a>
-            </blockquote>
-            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-          </div>
           <div id="playerWrapper">
             <div id="player"></div>
             <canvas id="videosGraph" width="640px" height="360px"></canvas>
