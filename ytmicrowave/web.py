@@ -1,11 +1,10 @@
 
 import functools
-import io
 import json
 import random
 import re
 
-from flask import Flask, Markup, make_response, redirect, request, render_template
+from flask import Flask, make_response, redirect, request, render_template
 from .database import db_session, select, Video
 from . import config
 
@@ -35,39 +34,6 @@ def parse_duration(s):
   return sum(int(x[:-1]) * mod[x[-1]] for x in matches)
 
 
-@db_session
-def render_videos_svg_graph():
-  max_duration = Video.max_duration()
-  if max_duration is None:
-    return ''  # No videos
-
-  config_max = parse_duration(config.get('web.graph.max_duration', '20m'))
-  max_duration = min(max_duration, config_max)
-  if max_duration == 0:
-    return ''
-
-  out = io.StringIO()
-  out.write('<svg height="50px" width="100%" style="background-color: #f2f2f2">')
-  out.write('''
-      <style type="text/css">
-      <![CDATA[
-        rect { fill: #0042ff; }
-      ]]>
-      </style>
-  ''')
-
-  scale = lambda x: x
-  for start, end in Video.iter_duration_ranges():
-    if start > max_duration: break
-    w = (end-start+1)/max_duration
-    x = start/max_duration
-    out.write('<rect width="{w}%" height="100%" x="{x}%" y="0"/>'.format(
-      w=scale(w)*100, x=scale(x)*100))
-
-  out.write('</svg>')
-  return out.getvalue()
-
-
 @app.route('/')
 @app.route('/<duration>')
 @db_session
@@ -87,13 +53,19 @@ def index(duration=None):
   else:
     random_duration = '1m 3s'
 
+  max_duration = Video.max_duration()
+  if max_duration is not None:
+    config_max = parse_duration(config.get('web.graph.max_duration', '20m'))
+    max_duration = min(max_duration, config_max)
+
   return render_template('index.html',
     notfound=(duration and not video),
     videoid=(video.id if video else None),
-    graph=Markup(render_videos_svg_graph()),
     randint=random.randint,
     duration=duration,
-    random_duration=random_duration)
+    random_duration=random_duration,
+    duration_ranges=json.dumps(list(Video.iter_duration_ranges())),
+    max_duration=json.dumps(max_duration))
 
 
 @app.route('/api')

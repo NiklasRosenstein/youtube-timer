@@ -6,13 +6,6 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <script src="https://www.youtube.com/player_api"></script>
     <style>
-      div[class|=ui-row] {
-        text-align: center;
-      }
-      div[class|=ui-cell] {
-        vertical-align: middle;
-        display: inline-block;
-      }
       html {
         font-family: 'Open Sans';
       }
@@ -29,12 +22,63 @@
         color: white;
         border: none;
       }
-      #github_icon {
+      #githubIcon {
         position: fixed;
         right: 1em;
         bottom: 1em;
       }
+      #microwaveWrapper {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+      }
+      #microwave {
+        position: relative;
+        width: 1000px;
+        height: 581px;
+        text-align: left;
+        background-image: url('/static/microwave.png');
+      }
+      #microwave form {
+        position: absolute;
+        left: 805px;
+        top: 126px;
+        display: inline-block;
+      }
+      #player {
+        width: 640px;
+        height: 360px;
+      }
+      #playerWrapper {
+        display: none;
+        position: absolute;
+        left: 61px;
+        top: 97px;
+        background-color: black;
+        border: 1px solid #3af;
+      }
+      #videosGraph {
+        background-color: #e6e6e6;
+        position: absolute;
+        left: -1px;
+        top: 360px;
+        width: 640px;
+        height: 20px;
+        border: 1px solid #3af;
+        border-top: none;
+      }
+      #tweet {
+        display: inline-block;
+        position: relative;
+        left: 122px;
+        top: 195px;
+      }
     </style>
+    <script>
+        var duration_ranges = {{ duration_ranges }}
+        var max_duration = {{ max_duration }}
+    </script>
     <script>
       var playid = "{{ videoid or '' }}"
       var player = null
@@ -48,6 +92,8 @@
       }
 
       function playVideo(id) {
+        document.getElementById('playerWrapper').style.display = 'inline-block'
+        document.getElementById('tweet').style.display = 'none'
         if (!player) {
           player = new YT.Player('player', {
             videoId: id,
@@ -88,6 +134,20 @@
         xhttp.send()
         return false
       }
+
+      function drawVideoGraph(canvas) {
+        console.log('drawVideoGraph!!', duration_ranges, max_duration)
+        if (!max_duration) return;
+        var ctx = canvas.getContext('2d')
+        ctx.fillStyle = '#3af'
+        duration_ranges.forEach(function (range) {
+          var x = range[0] / max_duration * canvas.width;
+          var w = (range[1] - range[0]) / max_duration * canvas.width;
+          console.log(x, w)
+          ctx.fillRect(x, 0, w, canvas.height)
+        })
+        console.log('drawVideoGraph!! DONE')
+      }
     </script>
   </head>
   <body>
@@ -95,49 +155,29 @@
     <script>showNotFoundAlert()</script>
     {% endif %}
 
-    <div class="ui-row">
-      <div class="ui-cell">
-        <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">
-          HD microwave oven that finds and screens a funny YouTube video the same duration as your selected cooking time.</p>&mdash;
-          Bored Elon Musk (@BoredElonMusk)
-          <a href="https://twitter.com/BoredElonMusk/status/539467221740040192?ref_src=twsrc%5Etfw">December 1, 2014</a>
-        </blockquote>
-        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-      </div>
-    </div>
-
-    <div class="ui-row">
-      <div class="ui-cell">
-        <h1>Ok.</h1>
-      </div>
-    </div>
-
-    <div class="ui-row">
-      <div class="ui-cell">
-        <div style="position: relative; width: 1000px; height: 581px; text-align: left; background-image: url('/static/microwave.png')">
-          <form style="position: absolute; left: 805px; top: 126px; display: inline-block;" onsubmit="return submitForm(event)">
+    <div id="microwaveWrapper">
+        <div id="microwave">
+          <form onsubmit="return submitForm(event)">
             <input id="duration" name="duration" value="{{duration or random_duration}}" placeholder="{{random_duration}}" autofocus>
           </form>
-          <div style="display: inline-block; position: absolute; width: 640px; height: 360px; left: 61px; top: 107px; background-color: black;">
+          <div id="tweet">
+            <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">
+              HD microwave oven that finds and screens a funny YouTube video the same duration as your selected cooking time.</p>&mdash;
+              Bored Elon Musk (@BoredElonMusk)
+              <a href="https://twitter.com/BoredElonMusk/status/539467221740040192?ref_src=twsrc%5Etfw">December 1, 2014</a>
+            </blockquote>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+          </div>
+          <div id="playerWrapper">
             <div id="player"></div>
+            <canvas id="videosGraph" width="640px" height="360px"></canvas>
           </div>
         </div>
-      </div>
     </div>
 
-    <div class="ui-row">
-      <div class="ui-cell">
-        <h2>Video availablity up to 20 minutes:</h2>
-      </div>
-    </div>
+    <script>drawVideoGraph(document.getElementById('videosGraph'))</script>
 
-    <div class="ui-row">
-      <div class="ui-cell" style="max-width: 1000px; margin: 0 1em">
-        {{graph}}
-      </div>
-    </div>
-
-    <a id="github_icon" href="https://github.com/NiklasRosenstein/youtube-timer">
+    <a id="githubIcon" href="https://github.com/NiklasRosenstein/youtube-timer">
       <img src="/static/github.svg">
     </a>
   </body>
